@@ -1,5 +1,5 @@
---USING Àı º°Ã·ºÒ°¡, °ıÈ£»ç¿ë
-SELECT e.ename as ÀÌ¸§, e.job as Á÷¾÷, e.sal as ¿ù±Ş, d.loc as ºÎ¼­À§Ä¡
+--USING ì ˆ ë³„ì²¨ë¶ˆê°€, ê´„í˜¸ì‚¬ìš©
+SELECT e.ename as ì´ë¦„, e.job as ì§ì—…, e.sal as ì›”ê¸‰, d.loc as ë¶€ì„œìœ„ì¹˜
   FROM emp e join dept d
   USING (deptno)
   WHERE e.job='SALESMAN';
@@ -9,8 +9,8 @@ select *
 from emp e join dept d
 USING (deptno) join salgrade s ON (e.sal between s.losal and s.hisal);
 
---natural join :Å×ÀÌºíº°Äª¾øÀÌ »ç¿ëÇØ¾ßÇÔ
-SELECT e.ename as ÀÌ¸§, e.job as Á÷¾÷, e.sal as ¿ù±Ş, d.loc as ºÎ¼­À§Ä¡
+--natural join :í…Œì´ë¸”ë³„ì¹­ì—†ì´ ì‚¬ìš©í•´ì•¼í•¨
+SELECT e.ename as ì´ë¦„, e.job as ì§ì—…, e.sal as ì›”ê¸‰, d.loc as ë¶€ì„œìœ„ì¹˜
 from emp e natural join dept d
 where e.job='SALESMAN';
 

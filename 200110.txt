@@ -1,4 +1,4 @@
---»ç¿øÅ×ÀÌºíÀ» »ý¼ºÇÏ´Âµ¥, ¿ù±ÞÀÌ 0¿¡¼­ 6000»çÀÌÀÇ µ¥ÀÌÅÍ¸¸ ÀÔ·ÂµÇ°Å³ª ¼öÁ¤
+--ì‚¬ì›í…Œì´ë¸”ì„ ìƒì„±í•˜ëŠ”ë°, ì›”ê¸‰ì´ 0ì—ì„œ 6000ì‚¬ì´ì˜ ë°ì´í„°ë§Œ ìž…ë ¥ë˜ê±°ë‚˜ ìˆ˜ì •
 CREATE TABLE EMP6
 (EMPNO NUMBER(10),
  ENAME VARCHAR2(20),
@@ -17,42 +17,42 @@ COMMIT;
  UPDATE EMP6
  SET sal =9000
  where ename ='CLARK';
- --Á¦¾à »èÁ¦ ¸í·É¾Æ
+ --ì œì•½ ì‚­ì œ ëª…ë ¹ì•„
  ALTER TABLE emp6
  DROP CONSTRAINT emp6_sal_ck;
  
  
- --ºÎ¼­Å×ÀÌºí¿¡ Á¸ÀçÇÏ´Â ºÎ¼­¹øÈ£¸¸ ÀÔ·ÂÇÒ ¼ö ÀÖµµ·Ï Á¦¾à
+ --ë¶€ì„œí…Œì´ë¸”ì— ì¡´ìž¬í•˜ëŠ” ë¶€ì„œë²ˆí˜¸ë§Œ ìž…ë ¥í•  ìˆ˜ ìžˆë„ë¡ ì œì•½
  DROP  TABLE DEPT7;
 DROP  TABLE EMP7;
---ºÎ¸ðÅ×ÀÌºí
+--ë¶€ëª¨í…Œì´ë¸”
 CREATE TABLE DEPT7
 ( DEPTNO  NUMBER(10) CONSTRAINT DEPT7_DEPTNO_PK PRIMARY KEY,
   DNAME  VARCHAR2(14),
   LOC  VARCHAR2(10) );
 
---ÀÚ½ÄÅ×ÀÌºí
+--ìžì‹í…Œì´ë¸”
 CREATE TABLE EMP7
 (EMPNO   NUMBER(10),
  ENAME    VARCHAR2(20),
  SAL       NUMBER(10),
  DEPTNO  NUMBER(10)  CONSTRAINT EMP7_DEPTNO_FK REFERENCES DEPT7(DEPTNO) );
  
- --FOREIGN KEY Á¦¾à »èÁ¦ : CASCADE
+ --FOREIGN KEY ì œì•½ ì‚­ì œ : CASCADE
  ALTER TABLE DEPT7
  DROP CONSTRAINT DEPT7_DEPTNO_PK CASCADE;
  
  
- --WITHÀý :ÀÓ½ÃÅ×ÀÌºí »ý¼º
- WITH JOB_SUMSAL AS (SELECT JOB, SUM(SAL) AS ÅäÅ»
+ --WITHì ˆ :ìž„ì‹œí…Œì´ë¸” ìƒì„±
+ WITH JOB_SUMSAL AS (SELECT JOB, SUM(SAL) AS í† íƒˆ
                                 FROM EMP
                                 GROUP BY JOB),
-            DEPTNO_SUMSAL AS (SELECT DEPTNO,SUM(SAL) AS ÅäÅ»
+            DEPTNO_SUMSAL AS (SELECT DEPTNO,SUM(SAL) AS í† íƒˆ
                                 FROM EMP
                                 GROUP BY DEPTNO
-                                HAVING SUM(SAL)>(SELECT AVG(ÅäÅ») +3000 FROM JOB_SUMSAL)
+                                HAVING SUM(SAL)>(SELECT AVG(í† íƒˆ) +3000 FROM JOB_SUMSAL)
                                 )
-SELECT DEPTNO,ÅäÅ»
+SELECT DEPTNO,í† íƒˆ
                     FROM DEPTNO_SUMSAL;
                     
 

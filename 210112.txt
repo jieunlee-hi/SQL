@@ -5,7 +5,7 @@ Where job='SALESMAN';
 select max(sal) from emp where job='SALESMAN';
 
 
---µ¥ÀÌÅÍ ÀÔ·Â¼öÁ¤»èÁ¦ÇÑ¹ø¿¡ÇÏ±â :MERGE
+--ë°ì´í„° ìž…ë ¥ìˆ˜ì •ì‚­ì œí•œë²ˆì—í•˜ê¸° :MERGE
 ALTER TABLE emp
    ADD loc varchar2(10);
 
@@ -37,7 +37,7 @@ UPDATE emp
   
   commit;
   
-  --emp Å×ÀÌºí ±¸Á¶¸¦±×´ë·Î º¹Á¦ÇÑ EMP2Å×ÀÌºí¿¡ ºÎ¼­¹øÈ£°¡ 10¹øÀÎ»ç¿øµéÀÇ»ç¿ø¹øÈ£ ÀÌ¸§¿ù±ÞºÎ¼­¹øÈ£¸¦ ÇÑ¹æ¿¡ÀÔ·Â
+  --emp í…Œì´ë¸” êµ¬ì¡°ë¥¼ê·¸ëŒ€ë¡œ ë³µì œí•œ EMP2í…Œì´ë¸”ì— ë¶€ì„œë²ˆí˜¸ê°€ 10ë²ˆì¸ì‚¬ì›ë“¤ì˜ì‚¬ì›ë²ˆí˜¸ ì´ë¦„ì›”ê¸‰ë¶€ì„œë²ˆí˜¸ë¥¼ í•œë°©ì—ìž…ë ¥
   CREATE TABLE emp2
     as
        SELECT *
@@ -52,7 +52,7 @@ from emp;
   from emp
   where deptno =10;
   
-  --update ¹®Àº ¸ðµç Àý¿¡¼­ ¼­ºêÄõ¸® »ç¿ë°¡´É
+  --update ë¬¸ì€ ëª¨ë“  ì ˆì—ì„œ ì„œë¸Œì¿¼ë¦¬ ì‚¬ìš©ê°€ëŠ¥
   update emp
   set sal =(select sal from emp where ename ='ALLEN')
   where job='SALESMAN';
@@ -61,17 +61,17 @@ from emp;
   select *
   from emp;
   
-  --ºÎ¼­¹øÈ£ÀÇ Æò±Õ¿ù±Þº¸´Ù Å©¸é »èÁ¦ 
+  --ë¶€ì„œë²ˆí˜¸ì˜ í‰ê· ì›”ê¸‰ë³´ë‹¤ í¬ë©´ ì‚­ì œ 
   delete from emp m
   where sal > (select avg(sal) from emp s where s.deptno=m.deptno);
   
-  --¼­ºêÄõ¸®¸¦ »ç¿ëÇÏ¿© µ¥ÀÌÅÍÇÕÄ¡±â
+  --ì„œë¸Œì¿¼ë¦¬ë¥¼ ì‚¬ìš©í•˜ì—¬ ë°ì´í„°í•©ì¹˜ê¸°
 MERGE INTO dept d
 USING (SELECT deptno, sum(sal) sumsal
         FROM emp
         GROUP BY deptno) v
 ON(d.deptno = v.deptno)
-WHEN MATCHED THEN --¸ÅÄ¡°¡µÈµÚ
+WHEN MATCHED THEN --ë§¤ì¹˜ê°€ëœë’¤
 UPDATE set d.sumsal = v.sumsal;
 
 ALTER TABLE dept
@@ -111,7 +111,7 @@ INSERT INTO EMP VALUES (7876,'ADAMS','CLERK',7788,'83-01-15',1100,NULL,20);
 INSERT INTO EMP VALUES (7934,'MILLER','CLERK',7782,'82-01-11',1300,NULL,10);
 
 commit;
---°èÃþÇüÁúÀÇ¹®
+--ê³„ì¸µí˜•ì§ˆì˜ë¬¸
 select *
 from emp;
 select rpad(' ', level*3)||ename as employee, level,sal,job,empno,mgr
@@ -125,7 +125,7 @@ from emp
 start with ename ='KING'
 CONNECT BY prior empno =mgr and ename!='BLAKE';
   
-  --¼­¿­¼ø¼­À¯ÁöÇÏ¸é¼­ ¿ù±ÞÀÌ ³ôÀº»ç¿øºÎÅÍ Ãâ·Â
+  --ì„œì—´ìˆœì„œìœ ì§€í•˜ë©´ì„œ ì›”ê¸‰ì´ ë†’ì€ì‚¬ì›ë¶€í„° ì¶œë ¥
   select rpad(' ', level*3)||ename as employee, level,sal,job,empno,mgr
 from emp
 start with ename= 'KING'
@@ -139,7 +139,7 @@ start with ename= 'KING'
 connect by prior empno=mgr
 order by sal desc;
 
---¼­¿­¼ø¼­¸¦ °¡·Î·ÎÃß·Â
+--ì„œì—´ìˆœì„œë¥¼ ê°€ë¡œë¡œì¶”ë ¥
 select ename, SYS_CONNECT_BY_PATH(ename, '/') as path
 FROM emp
 START WITH ename ='KING'
@@ -150,16 +150,16 @@ FROM emp
 START WITH ename ='KING'
 CONNECT BY prior empno=mgr;
 
---ÀÏ¹ÝÅ×ÀÌºí»ý¼º
+--ì¼ë°˜í…Œì´ë¸”ìƒì„±
 CREATE TABLE EMP01
 (EMPNO NUMBER(10),
 ENAME VARCHAR2(10),
 SAL NUMBER(10,2),
 HIREDATE DATE);
 
---ÀÓ½ÃÅ×ÀÌºí»ý¼º :GLOBAL TEMPORARY
---ON COMMIT DELETE ROWS : COMMITÇÒ¶§±îÁö¸¸ µ¥ÀÌÅÍº¸°ü
---ON COMMIT PRESERVE ROWS : ¼¼¼ÇÀÌ Á¾·áµÉ¶§±îÁö¸¸ µ¥ÀÌÅÍº¸°ü
+--ìž„ì‹œí…Œì´ë¸”ìƒì„± :GLOBAL TEMPORARY
+--ON COMMIT DELETE ROWS : COMMITí• ë•Œê¹Œì§€ë§Œ ë°ì´í„°ë³´ê´€
+--ON COMMIT PRESERVE ROWS : ì„¸ì…˜ì´ ì¢…ë£Œë ë•Œê¹Œì§€ë§Œ ë°ì´í„°ë³´ê´€
 CREATE GLOBAL TEMPORARY TABLE EMP37
 (EMPNO NUMBER(10),
 ENAME VARCHAR2(10),

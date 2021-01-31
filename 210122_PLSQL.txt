@@ -1,32 +1,32 @@
---µÎ ¼ö¸¦ °¢°¢ ¹°¾îº¸°Ô ÇÏ°í ÀÔ·Â¹Ş¾Æ µÎ¼öÀÇ ÇÕÀÌ °á°ú·Î Ãâ·ÂµÇ°Ô ÇÏ´Â PL/SQL¹® ÀÛ¼º
+--ë‘ ìˆ˜ë¥¼ ê°ê° ë¬¼ì–´ë³´ê²Œ í•˜ê³  ì…ë ¥ë°›ì•„ ë‘ìˆ˜ì˜ í•©ì´ ê²°ê³¼ë¡œ ì¶œë ¥ë˜ê²Œ í•˜ëŠ” PL/SQLë¬¸ ì‘ì„±
 SET SERVEROUTPUT ON
-ACCEPT P_NUM1 PROMPT 'Ã¹¹øÂ° ¼ıÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä ~'
-ACCEPT P_NUM2 PROMPT 'µÎ¹øÂ° ¼ıÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä~'
+ACCEPT P_NUM1 PROMPT 'ì²«ë²ˆì§¸ ìˆ«ìë¥¼ ì…ë ¥í•˜ì„¸ìš” ~'
+ACCEPT P_NUM2 PROMPT 'ë‘ë²ˆì§¸ ìˆ«ìë¥¼ ì…ë ¥í•˜ì„¸ìš”~'
 
 DECLARE
     V_SUM NUMBER(10);
 BEGIN
     V_SUM := &P_NUM1 + &P_NUM2;
-    DBMS_OUTPUT.put_line('ÃÑÇÕÀº: ' || V_SUM);
+    DBMS_OUTPUT.put_line('ì´í•©ì€: ' || V_SUM);
 END;
 
 
 
 set serveroutput on
-accept p_num1 prompt '¼ıÀÚÀÔ·Â'
-accept p_num2 prompt '¼ıÀÚÀÔ·Â2'
+accept p_num1 prompt 'ìˆ«ìì…ë ¥'
+accept p_num2 prompt 'ìˆ«ìì…ë ¥2'
 
 declare
     vsum number(10);
 begin
  vsum : = &p_num1 + &p_num2;
- dbms_output.put_line('ÇÕ°è:'||vsum);
+ dbms_output.put_line('í•©ê³„:'||vsum);
  end;
  /
  select  * from emp;
- --»ç¿ø¹øÈ£¸¦ ÀÔ·Â¹Ş¾Æ ÇØ´ç»ç¿ø¿ù±ŞÃâ·Â
+ --ì‚¬ì›ë²ˆí˜¸ë¥¼ ì…ë ¥ë°›ì•„ í•´ë‹¹ì‚¬ì›ì›”ê¸‰ì¶œë ¥
  set serveroutput on
- accept p_no prompt '»ç¿ø¹øÈ£ÀÔ·Â:'
+ accept p_no prompt 'ì‚¬ì›ë²ˆí˜¸ì…ë ¥:'
  
  declare
   v_sal varchar(20);
@@ -34,31 +34,31 @@ begin
        select sal into v_sal
         from emp 
         where EMPNO=&p_no;
-        dbms_output.put_line('»ç¿ø¿ù±Ş:'||v_sal);
+        dbms_output.put_line('ì‚¬ì›ì›”ê¸‰:'||v_sal);
   
 end;
 /
 
---¼ıÀÚ¸¦ ÀÔ·Â¹Ş¾Æ Â¦¼öÀÎÁö È¦¼öÀÎÁö
+--ìˆ«ìë¥¼ ì…ë ¥ë°›ì•„ ì§ìˆ˜ì¸ì§€ í™€ìˆ˜ì¸ì§€
 set serveroutput on
-set verify off  --º¯¼ö¿¡µé¾î°¡´Â°ªÀ» º¸¿©ÁÖ´Â°úÁ¤À» Ãâ·ÂÇÏÁö¾Ê´Â´Ù.
-accept   p_num   prompt  '¼ıÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä ~  '
+set verify off  --ë³€ìˆ˜ì—ë“¤ì–´ê°€ëŠ”ê°’ì„ ë³´ì—¬ì£¼ëŠ”ê³¼ì •ì„ ì¶œë ¥í•˜ì§€ì•ŠëŠ”ë‹¤.
+accept   p_num   prompt  'ìˆ«ìë¥¼ ì…ë ¥í•˜ì„¸ìš” ~  '
 begin
 if   mod(&p_num,2) = 0  then
-        dbms_output.put_line('Â¦¼öÀÔ´Ï´Ù.');
+        dbms_output.put_line('ì§ìˆ˜ì…ë‹ˆë‹¤.');
     else  
-        dbms_output.put_line('È¦¼öÀÔ´Ï´Ù.');
+        dbms_output.put_line('í™€ìˆ˜ì…ë‹ˆë‹¤.');
 end if;
 end;
 /
 
 
 
---ÀÌ¸§À» ÀÔ·Â¹Ş¾Æ ¿ù±Ş3000ÀÌ»ó °í¼ÒµæÀÚ 2000ÀÌ»ó Áß°£¼Òµæ ±×ÀÌÇÏ Àú¼Òµæ
+--ì´ë¦„ì„ ì…ë ¥ë°›ì•„ ì›”ê¸‰3000ì´ìƒ ê³ ì†Œë“ì 2000ì´ìƒ ì¤‘ê°„ì†Œë“ ê·¸ì´í•˜ ì €ì†Œë“
 
 set serveroutput on
 set verify off
-accept p_ename prompt '»ç¿øÀÌ¸§ÀÔ·Â:'
+accept p_ename prompt 'ì‚¬ì›ì´ë¦„ì…ë ¥:'
 
 declare
     v_ename emp.ename%type :=upper('&p_ename');
@@ -83,7 +83,7 @@ end;
 
 set serveroutput on
 set verify off
-accept p_ename prompt '»ç¿ø ÀÌ¸§À» ÀÔ·ÂÇÏ¼¼¿ä ~ '
+accept p_ename prompt 'ì‚¬ì› ì´ë¦„ì„ ì…ë ¥í•˜ì„¸ìš” ~ '
 declare  
      v_ename  emp.ename%type := upper('&p_ename');
      v_sal     emp.sal%type;  
@@ -94,18 +94,18 @@ declare
       where ename = v_ename;
      
     if   v_sal >= 3000  then 
-         dbms_output.put_line('°í¼ÒµæÀÚ ÀÔ´Ï´Ù.');
+         dbms_output.put_line('ê³ ì†Œë“ì ì…ë‹ˆë‹¤.');
     elsif   v_sal >= 2000  then 
-        dbms_output.put_line('Áß°£ ¼ÒµæÀÚ ÀÔ´Ï´Ù.');
+        dbms_output.put_line('ì¤‘ê°„ ì†Œë“ì ì…ë‹ˆë‹¤.');
     else  
-        dbms_output.put_line('Àú¼ÒµæÀÚ ÀÔ´Ï´Ù.');
+        dbms_output.put_line('ì €ì†Œë“ì ì…ë‹ˆë‹¤.');
      end  if;
 end;
 /
 
 
 
---basic loop¹®
+--basic loopë¬¸
 set serveroutput on
 declare
     v_count number(10) :=0;
@@ -140,8 +140,8 @@ end;
 /
         
     
---ÀÌÁß loop¹®
-prompt ±¸±¸´Ü ÀüÃ¼Ãâ·Â
+--ì´ì¤‘ loopë¬¸
+prompt êµ¬êµ¬ë‹¨ ì „ì²´ì¶œë ¥
 begin for i in 2..9 loop
         for j in 1..9 loop
             dbms_output.put_line(i||'x'||j||'='||i*j);

@@ -1,13 +1,13 @@
---±¸±¸´Ü2´ÜÃâ·Â
+--êµ¬êµ¬ë‹¨2ë‹¨ì¶œë ¥
 
 WITH LOOP_TABLE AS (SELECT LEVEL AS NUM
-                    FROM DUAL CONNECT BY LEVEL<=9) --1~9±îÁöÃâ·ÂÇÏ´Â WITHÅ×ÀÌºí»ý¼º
-SELECT '2'||'X'||NUM||'='||2*NUM AS "2´Ü"
+                    FROM DUAL CONNECT BY LEVEL<=9) --1~9ê¹Œì§€ì¶œë ¥í•˜ëŠ” WITHí…Œì´ë¸”ìƒì„±
+SELECT '2'||'X'||NUM||'='||2*NUM AS "2ë‹¨"
 FROM LOOP_TABLE;
 
                     
 WITH LOOP_TABLE AS (SELECT LEVEL AS NUM
-                    FROM DUAL CONNECT BY LEVEL<=9), --1~9±îÁöÃâ·ÂÇÏ´Â WITHÅ×ÀÌºí»ý¼º,
+                    FROM DUAL CONNECT BY LEVEL<=9), --1~9ê¹Œì§€ì¶œë ¥í•˜ëŠ” WITHí…Œì´ë¸”ìƒì„±,
                     GUGU_TABLE AS (SELECT LEVEL +1 AS GUGU
                          FROM DUAL CONNECT BY LEVEL<=8) -- 1+8 =9
 SELECT TO_CHAR(A.NUM)||'X'||TO_CHAR(B.GUGU)||'='||TO_CHAR(B.GUGU * A.NUM)
@@ -15,51 +15,51 @@ FROM LOOP_TABLE A , GUGU_TABLE B;
 
 
 WITH LOOP_TABLE AS (SELECT LEVEL AS NUM
-                    FROM DUAL CONNECT BY LEVEL<=9), --1~9±îÁöÃâ·ÂÇÏ´Â WITHÅ×ÀÌºí»ý¼º,
+                    FROM DUAL CONNECT BY LEVEL<=9), --1~9ê¹Œì§€ì¶œë ¥í•˜ëŠ” WITHí…Œì´ë¸”ìƒì„±,
                     GUGU_TABLE AS (SELECT LEVEL  AS GUGU
                          FROM DUAL CONNECT BY LEVEL<=8) -- 1+8 =9
-SELECT A.NUM||'X'||B.GUGU||'='||B.GUGU * A.NUM AS ±¸±¸´Ü
+SELECT A.NUM||'X'||B.GUGU||'='||B.GUGU * A.NUM AS êµ¬êµ¬ë‹¨
 FROM LOOP_TABLE A , GUGU_TABLE B;
 
---Á÷°¢»ï°¢Çü Ãâ·Â
---LPAD(±âÁØÀÌ µÇ´Â ¹®ÀÚ , ¹Ýº¹È½¼ö , ±âÁØÀÌ µÇ´Â ¹®ÀÚ¸¦ ±âÁØÀ¸·Î ¿ÞÂÊ¿¡ Ã¤¿ï ¹®ÀÚ)
+--ì§ê°ì‚¼ê°í˜• ì¶œë ¥
+--LPAD(ê¸°ì¤€ì´ ë˜ëŠ” ë¬¸ìž , ë°˜ë³µíšŸìˆ˜ , ê¸°ì¤€ì´ ë˜ëŠ” ë¬¸ìžë¥¼ ê¸°ì¤€ìœ¼ë¡œ ì™¼ìª½ì— ì±„ìš¸ ë¬¸ìž)
 
 WITH LOOP_TABLE AS (SELECT LEVEL AS NUM
                     FROM DUAL
                     CONNECT BY LEVEL <=8)
-SELECT LPAD(' ',10-NUM,' ')|| LPAD('¡Ù',NUM,'¡Ù')AS STAR
+SELECT LPAD(' ',10-NUM,' ')|| LPAD('â˜†',NUM,'â˜†')AS STAR
 FROM LOOP_TABLE;
 
---ÀÔ·Â¹ÞÀº ¼ýÀÚ¸¸Å­ »ï°¢ÇüÃâ·Â
-UNDEFINE ¼ýÀÚ1 --Ä¡È¯º¯¼öÀÇ °ª ÃÊ±âÈ­
-UNDEFINE ¼ýÀÚ2
+--ìž…ë ¥ë°›ì€ ìˆ«ìžë§Œí¼ ì‚¼ê°í˜•ì¶œë ¥
+UNDEFINE ìˆ«ìž1 --ì¹˜í™˜ë³€ìˆ˜ì˜ ê°’ ì´ˆê¸°í™”
+UNDEFINE ìˆ«ìž2
 
 WITH LOOP_TABLE AS(SELECT LEVEL AS NUM
                     FROM DUAL
-                    CONNECT BY LEVEL <= &¼ýÀÚ1)
-SELECT LPAD(' ',&¼ýÀÚ2-NUM,' ') || LPAD('¡Ú',NUM,'¡Ú') AS "TRIANGLE"
+                    CONNECT BY LEVEL <= &ìˆ«ìž1)
+SELECT LPAD(' ',&ìˆ«ìž2-NUM,' ') || LPAD('â˜…',NUM,'â˜…') AS "TRIANGLE"
 FROM LOOP_TABLE;
 
 
---¸¶¸§¸ðÃâ·Â
+--ë§ˆë¦„ëª¨ì¶œë ¥
 UNDEFINE P_NUM
-ACCEPT P_NUM PROMPT '¼ýÀÚ ÀÔ·Â :'
-SELECT LPAD(' ' ,&P_NUM-LEVEL,' ') || RPAD('¡Ú',LEVEL,'¡Ú')AS STAR FROM DUAL
+ACCEPT P_NUM PROMPT 'ìˆ«ìž ìž…ë ¥ :'
+SELECT LPAD(' ' ,&P_NUM-LEVEL,' ') || RPAD('â˜…',LEVEL,'â˜…')AS STAR FROM DUAL
 CONNECT BY LEVEL <&P_NUM+1
 UNION ALL 
-SELECT LPAD(' ', LEVEL,' ')||RPAD('¡Ú',(&P_NUM)-LEVEL,'¡Ú')AS STAR FROM DUAL
+SELECT LPAD(' ', LEVEL,' ')||RPAD('â˜…',(&P_NUM)-LEVEL,'â˜…')AS STAR FROM DUAL
 CONNECT BY LEVEL < &P_NUM;
 
 
---»ç°¢ÇüÃâ·Â
+--ì‚¬ê°í˜•ì¶œë ¥
 UNDEFINE P_N1
 UNDEFINE P_N2
-ACCEPT P_N1 PROMPT '°¡·Î ¼ýÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä~';
-ACCEPT P_N2 PROMPT '¼¼·Î ¼ýÀÚ¸¦ ÀÔ·ÂÇÏ¼¼¿ä~';
+ACCEPT P_N1 PROMPT 'ê°€ë¡œ ìˆ«ìžë¥¼ ìž…ë ¥í•˜ì„¸ìš”~';
+ACCEPT P_N2 PROMPT 'ì„¸ë¡œ ìˆ«ìžë¥¼ ìž…ë ¥í•˜ì„¸ìš”~';
 
 WITH LOOP_TABLE AS(SELECT LEVEL AS NUM
                     FROM DUAL
                     CONNECT BY LEVEL <=&P_N2)
-SELECT LPAD('¡Ú',&P_N1,'¡Ú')AS STAR
+SELECT LPAD('â˜…',&P_N1,'â˜…')AS STAR
 FROM LOOP_TABLE;
                     

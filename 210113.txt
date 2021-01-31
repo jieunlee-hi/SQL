@@ -1,17 +1,17 @@
---VIEW : CREATE VIEW ºäÀÌ¸§´ÙÀ½¿¡ AS ÀÌÈÄ ºä°¡ º¸¿©Áà¾ßÇÒ Äõ¸®ÀÛ¼º
+--VIEW : CREATE VIEW ë·°ì´ë¦„ë‹¤ìŒì— AS ì´í›„ ë·°ê°€ ë³´ì—¬ì¤˜ì•¼í•  ì¿¼ë¦¬ìž‘ì„±
 CREATE VIEW EMP_VIEW
 AS
 SELECT empno, ename, sal, job,deptno
 FROM emp
 WHERE job = 'SALESMAN';
 
---VIEW µ¥ÀÌÅÍ¼öÁ¤ÇØµµ µ¥ÀÌÅÍ°¡ º¯°æµÈ´Ù.
+--VIEW ë°ì´í„°ìˆ˜ì •í•´ë„ ë°ì´í„°ê°€ ë³€ê²½ëœë‹¤.
 select * from emp_view;
 update emp_view set sal=0 where ename='MARTIN';
 select * from emp where job='SALESMAN';
 
---ºä¿¡ ÇÔ¼ö³ª ±×·ìÇÔ¼ö°¡ Æ÷ÇÔµÇ¾îÀÖÀ¸¸é º¹ÇÕºä¶ó°íÇÑ´Ù
---ÇÔ¼ö³ª ±×·ìÇÔ¼ö ¾µ ¶§ ¹Ýµå½Ã º°ÄªÀ» ½á¾ßÇÑ´Ù.
+--ë·°ì— í•¨ìˆ˜ë‚˜ ê·¸ë£¹í•¨ìˆ˜ê°€ í¬í•¨ë˜ì–´ìžˆìœ¼ë©´ ë³µí•©ë·°ë¼ê³ í•œë‹¤
+--í•¨ìˆ˜ë‚˜ ê·¸ë£¹í•¨ìˆ˜ ì“¸ ë•Œ ë°˜ë“œì‹œ ë³„ì¹­ì„ ì¨ì•¼í•œë‹¤.
 CREATE VIEW EMP_VIEW2
 AS
 SELECT deptno, round(avg(sal)) sal
@@ -20,15 +20,15 @@ group by deptno;
 
 select * from emp_view2;
 
---INDEX = °Ë»ö¼Óµµ³ôÀÌ±â
+--INDEX = ê²€ìƒ‰ì†ë„ë†’ì´ê¸°
 CREATE INDEX EMP_SAL
 ON EMP(SAL);
 
-create sequence seq1 --½ÃÄö½º »ý¼º
-START WITH 1  --Ã¹½ÃÀÛ ¼ýÀÚ 1
-INCREMENT BY 1  --¼ýÀÚÀÇ Áõ°¡Ä¡ 1
-MAXVALUE 100  --ÃÖ´ë¼ýÀÚ 100
-NOCYCLE;  --´Ù½ÃÃ³À½1¹øºÎÅÍ »ý¼ºÇÒÁö ¿©ºÎ
+create sequence seq1 --ì‹œí€€ìŠ¤ ìƒì„±
+START WITH 1  --ì²«ì‹œìž‘ ìˆ«ìž 1
+INCREMENT BY 1  --ìˆ«ìžì˜ ì¦ê°€ì¹˜ 1
+MAXVALUE 100  --ìµœëŒ€ìˆ«ìž 100
+NOCYCLE;  --ë‹¤ì‹œì²˜ìŒ1ë²ˆë¶€í„° ìƒì„±í• ì§€ ì—¬ë¶€
 
 SELECT MAX(empno)
 FROM emp;
@@ -46,7 +46,7 @@ INSERT INTO EMP02 VALUES(SEQ1.NEXTVAL,'JAMES',4500);
 SELECT *
 FROM EMP02;
 
---½Ç¼ö·Î Áö¿î µ¥ÀÌÅÍº¹±¸
+--ì‹¤ìˆ˜ë¡œ ì§€ìš´ ë°ì´í„°ë³µêµ¬
 SELECT ename, sal
 FROM emp
 WHERE ename='KING';
@@ -56,25 +56,25 @@ set sal=10
 where ename='KING';
 commit;
 
---5ºÐÀüµ¥ÀÌÅÍÈ®ÀÎ
+--5ë¶„ì „ë°ì´í„°í™•ì¸
 select ename, sal
 from emp 
 as of timestamp(systimestamp - interval '5' minute)
 where ENAME='KING';
 
---»ç¿øÅ×ÀÌºíÀ» ÇÃ·¡½Ã¹é ÇÏ·Á¸é ¸ÕÀú »óÅÂº¯°æÇØ¾ßÇÔ
---delete ÇÏ°í commit;ÇßÀ»¶§
+--ì‚¬ì›í…Œì´ë¸”ì„ í”Œëž˜ì‹œë°± í•˜ë ¤ë©´ ë¨¼ì € ìƒíƒœë³€ê²½í•´ì•¼í•¨
+--delete í•˜ê³  commit;í–ˆì„ë•Œ
 alter table emp enable row movement;
 flashback table emp to timestamp(systimestamp - interval '5' minute);
 
---drop µÈ »ç¿øÅ×ÀÌºíÀ» ÈÞÁö¤¼Åë¿¡¼­º¹¿ø
-DROP TABLE EMP; --Å×ÀÌºí»èÁ¦
+--drop ëœ ì‚¬ì›í…Œì´ë¸”ì„ íœ´ì§€ã…Œí†µì—ì„œë³µì›
+DROP TABLE EMP; --í…Œì´ë¸”ì‚­ì œ
 SELECT ORIGINAL_NAME, DROPTIME
-FROM USER_RECYCLEBIN; --ÈÞÁöÅë¿¡ Á¸ÀçÇÏ´ÂÁöÈ®ÀÎ
+FROM USER_RECYCLEBIN; --íœ´ì§€í†µì— ì¡´ìž¬í•˜ëŠ”ì§€í™•ì¸
 FLASHBACK TABLE emp TO BEFORE DROP;
 
 
---°ú°ÅºÎÅÍ ÇöÀç±îÁö µ¥ÀÌÅÍº¯°æÀÌ·Â
+--ê³¼ê±°ë¶€í„° í˜„ìž¬ê¹Œì§€ ë°ì´í„°ë³€ê²½ì´ë ¥
 SELECT ename, sal, versions_starttime, versions_endtime, versions_oreration
 FROM emp
 VERSIONS BETWEEN TIMESTAMP
@@ -83,14 +83,14 @@ AND MAXVAUE
 WHERE ename='KING'
 ORDER BY versions_starttime;
 
---PRIMARY KEY : Áßº¹µÈµ¥ÀÌÅÍ¿Í NULL°ª ÀÔ·Â¸øÇÔ
---Á¦¾àÀÌ¸§Àº Å×ÀÌºí¸í_ÄÃ·³¸í_Á¦¾àÁ¾·ùÃà¾à
+--PRIMARY KEY : ì¤‘ë³µëœë°ì´í„°ì™€ NULLê°’ ìž…ë ¥ëª»í•¨
+--ì œì•½ì´ë¦„ì€ í…Œì´ë¸”ëª…_ì»¬ëŸ¼ëª…_ì œì•½ì¢…ë¥˜ì¶•ì•½
 CREATE TABLE DEPT2
 (DEPTNO NUMBER(10) CONSTRAINT DEPT2_DEPNO_PK PRIMARY KEY,
 DNAME VARCHAR2(14),
 LOC VARCHAR2(10));
 
---Å×ÀÌºí»ý¼ºÈÄ¿¡ Á¦¾à»ý¼º
+--í…Œì´ë¸”ìƒì„±í›„ì— ì œì•½ìƒì„±
 CREATE TABLE DEPT2_
 (DEPTNO NUMBER(10),
 DNAME VARCHAR2(14),
@@ -103,7 +103,7 @@ ADD CONSTRAINT DEPT2_DEPTNO_PK PRIMARY KEY(DEPTNO);
 
 
 
---UNIQUE :NULL°ªÀÔ·Â°¡´É Áßº¹µ¥ÀÌÅÍºÒ°¡CREATE TABLE DEPT2_
+--UNIQUE :NULLê°’ìž…ë ¥ê°€ëŠ¥ ì¤‘ë³µë°ì´í„°ë¶ˆê°€CREATE TABLE DEPT2_
 CREATE TABLE DEPT3
 (DEPTNO NUMBER(10),
 DNAME VARCHAR2(14) CONSTRAINT DEPT3_DNAME_UN UNIQUE,
@@ -111,7 +111,7 @@ LOC VARCHAR2(10));
 
 
 
---NOT NULL : NULL°ªÀÌÁ¸ÀçÇÏÁö¾Ê¾Æ¾ß Áß°£¿¡ Á¦¾àº¯°æ°¡´É
+--NOT NULL : NULLê°’ì´ì¡´ìž¬í•˜ì§€ì•Šì•„ì•¼ ì¤‘ê°„ì— ì œì•½ë³€ê²½ê°€ëŠ¥
 CREATE TABLE DEPT5
 (DEPTNO NUMBER(10),
 DNAME VARCHAR2(14) ,

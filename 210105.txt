@@ -1,11 +1,11 @@
 select empno, ename, sal, sum(sal) over (order by empno Rows
                                         BETWEEN UNBOUNDED PRECEDING
-                                        AND CURRENT ROW)´©ÀûÄ¡
+                                        AND CURRENT ROW)ëˆ„ì ì¹˜
 from emp
 where job in ('ANALYST','MANAGER');
 
-select empno,ename, sal, RATIO_TO_REPORT(sal) OVER () as ºñÀ²,
-                        SAL/SUM(sal) OVER () as "ºñ±³ºñÀ²"
+select empno,ename, sal, RATIO_TO_REPORT(sal) OVER () as ë¹„ìœ¨,
+                        SAL/SUM(sal) OVER () as "ë¹„êµë¹„ìœ¨"
 FROM emp
 where deptno=20;
 
@@ -16,7 +16,7 @@ select deptno,job,mgr,sum(sal)
 from emp
 group by ROLLUP(deptno,job,mgr);
 
---cube :ÀüÃ¼ÅäÅ»¿ù±ŞÃâ·Â
+--cube :ì „ì²´í† íƒˆì›”ê¸‰ì¶œë ¥
 select job, sum(sal)
 from emp
 group by cube(job);
@@ -33,7 +33,7 @@ select deptno,job,sum(sal)
 from emp
 group by grouping sets((deptno),(job),());
 
---rollup°ú grouping setsºñ±³
+--rollupê³¼ grouping setsë¹„êµ
 select deptno, sum(sal)
 from emp
 group by rollup(deptno);
@@ -46,37 +46,37 @@ sets((deptno),());
 
 
 
---ROW_NUMBER() over(order by~~) :°íÀ¯¹øÈ£
+--ROW_NUMBER() over(order by~~) :ê³ ìœ ë²ˆí˜¸
 --ex ) RANK -11345 DENSE_RANK-11234  ROW_NUMBER-12345
-select deptno, ename, sal,ROW_NUMBER() over(PARTITION BY deptno ORDER BY sal DESC) ¹øÈ£
+select deptno, ename, sal,ROW_NUMBER() over(PARTITION BY deptno ORDER BY sal DESC) ë²ˆí˜¸
 from emp
 where deptno in(10,20);
 
 
---»ó´Ü 5°³ÇàÃâ·Â
+--ìƒë‹¨ 5ê°œí–‰ì¶œë ¥
 select ROWNUM, empno, ename, job, sal
 from emp
 where ROWNUM <=5;
 
---¿ù±Ş³ôÀº¼ø 4Çà : FETCH FIRST N ROWS ONLY;
+--ì›”ê¸‰ë†’ì€ìˆœ 4í–‰ : FETCH FIRST N ROWS ONLY;
 select empno, ename, job, sal
 from emp
 order by sal DESC FETCH FIRST 4 ROWS ONLY;
---¿ù±Ş³ôÀº 20%
+--ì›”ê¸‰ë†’ì€ 20%
 
 select empno, ename, job, sal
 from emp
 order by sal desc FETCH FIRSt 20 PERCENT ROWS ONLY;
 
---WITH TIES : ¿©·¯ÇàÀÌ µ¿ÀÏÇÑ°ªÀ»°¡Áø´Ù¸é
+--WITH TIES : ì—¬ëŸ¬í–‰ì´ ë™ì¼í•œê°’ì„ê°€ì§„ë‹¤ë©´
 select empno, ename, job, sal
 from emp
 order by sal DESC FETCH FIRST 2 ROWS WITH TIES; 
 
---OFFSET :Ãâ·ÂÀÌ½ÃÀÛµÇ´Â ÇàÀÇ À§Ä¡ ÁöÁ¤
+--OFFSET :ì¶œë ¥ì´ì‹œì‘ë˜ëŠ” í–‰ì˜ ìœ„ì¹˜ ì§€ì •
 select empno, ename, job, sal
 from emp
-order by sal DESC offset 9 ROWS; --10¹øÂ°ÇàºÎÅÍ ³¡±îÁö Ãâ·ÂµÊ
+order by sal DESC offset 9 ROWS; --10ë²ˆì§¸í–‰ë¶€í„° ëê¹Œì§€ ì¶œë ¥ë¨
 
 select empno, ename, job, sal
 from emp
@@ -85,7 +85,7 @@ FETCH FIRST 2 ROWS ONLY;
 
 select *
 from dept;
---¿©·¯Å×ÀÌºíÁ¶ÀÎ : EQUAL JOIN
+--ì—¬ëŸ¬í…Œì´ë¸”ì¡°ì¸ : EQUAL JOIN
 select ename, loc
 from emp,dept;
 
@@ -104,14 +104,14 @@ select *
 from salgrade;
 
 
---OUTER JOIN :±âÁ¸ EQUAL JOIN ¹®¹ı¿¡ (+)Ãß°¡/ LIGHT OUTER JOIN - LEFT OUTER JOIN
+--OUTER JOIN :ê¸°ì¡´ EQUAL JOIN ë¬¸ë²•ì— (+)ì¶”ê°€/ LIGHT OUTER JOIN - LEFT OUTER JOIN
 select e.ename, d.loc
 FROM emp e, dept d
 WHERE e.deptno (+) = d.deptno;
 
 
 --self join
-select e.ename as »ç¿ø , e.job as Á÷¾÷, m.ename as °ü¸®ÀÚ, m.job as Á÷¾÷
+select e.ename as ì‚¬ì› , e.job as ì§ì—…, m.ename as ê´€ë¦¬ì, m.job as ì§ì—…
 from emp e, emp m
 where e.mgr = m.empno and e.job='SALESMAN';
 
@@ -119,8 +119,8 @@ select *
 from emp;
 
 
---ONÀı
-select e.ename as »ç¿ø , e.job as Á÷¾÷, e.sal as ¿ù±Ş, d.loc as ºÎ¼­À§Ä¡
+--ONì ˆ
+select e.ename as ì‚¬ì› , e.job as ì§ì—…, e.sal as ì›”ê¸‰, d.loc as ë¶€ì„œìœ„ì¹˜
 FROM emp e JOIN dept d
 ON(e.deptno =d.deptno)
 where e.job='SALESMAN';
