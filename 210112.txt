@@ -1,0 +1,183 @@
+select ename, sal, max(sal), min(sal)
+FROM emp
+Where job='SALESMAN';
+
+select max(sal) from emp where job='SALESMAN';
+
+
+--데이터 입력수정삭제한번에하기 :MERGE
+ALTER TABLE emp
+   ADD loc varchar2(10);
+
+MERGE INTO emp e
+USING dept d
+ON (e.deptno =d.deptno)
+WHEN MATCHED THEN
+UPDATE set e.loc=d.loc
+WHEN NOT MATCHED THEN
+INSERT (e.empno, e.deptno, e.loc) VALUES (1111,d.deptno, d.loc);
+
+select *
+from emp;
+select *
+from dept;
+
+
+UPDATE emp
+  SET sal = 3000
+  WHERE ename='JONES';
+  
+UPDATE emp
+  SET sal = 9000
+  WHERE ename='JONES';
+  
+  select sal
+  from emp
+  where ename='JONES';
+  
+  commit;
+  
+  --emp 테이블 구조를그대로 복제한 EMP2테이블에 부서번호가 10번인사원들의사원번호 이름월급부서번호를 한방에입력
+  CREATE TABLE emp2
+    as
+       SELECT *
+          FROM emp
+          WHERE 1=2;
+select *
+from emp2;
+select *
+from emp;
+  INSERT INTO emp2(empno, ename, sal,deptno)
+  select empno,ename, sal, deptno
+  from emp
+  where deptno =10;
+  
+  --update 문은 모든 절에서 서브쿼리 사용가능
+  update emp
+  set sal =(select sal from emp where ename ='ALLEN')
+  where job='SALESMAN';
+  
+  
+  select *
+  from emp;
+  
+  --부서번호의 평균월급보다 크면 삭제 
+  delete from emp m
+  where sal > (select avg(sal) from emp s where s.deptno=m.deptno);
+  
+  --서브쿼리를 사용하여 데이터합치기
+MERGE INTO dept d
+USING (SELECT deptno, sum(sal) sumsal
+        FROM emp
+        GROUP BY deptno) v
+ON(d.deptno = v.deptno)
+WHEN MATCHED THEN --매치가된뒤
+UPDATE set d.sumsal = v.sumsal;
+
+ALTER TABLE dept
+ADD sumsal number(10);
+
+SELECT deptno, sum(sal) sumsal
+        FROM emp
+        GROUP BY deptno;
+select *
+from dept;
+
+drop table emp;
+
+CREATE TABLE EMP (
+ EMPNO               NUMBER(4) NOT NULL,
+ ENAME               VARCHAR2(10),
+ JOB                 VARCHAR2(9),
+ MGR                 NUMBER(4) ,
+ HIREDATE            DATE,
+ SAL                 NUMBER(7,2),
+ COMM                NUMBER(7,2),
+ DEPTNO              NUMBER(2) );
+
+INSERT INTO EMP VALUES (7839,'KING','PRESIDENT',NULL,'81-11-17',5000,NULL,10);
+INSERT INTO EMP VALUES (7698,'BLAKE','MANAGER',7839,'81-05-01',2850,NULL,30);
+INSERT INTO EMP VALUES (7782,'CLARK','MANAGER',7839,'81-05-09',2450,NULL,10);
+INSERT INTO EMP VALUES (7566,'JONES','MANAGER',7839,'81-04-01',2975,NULL,20);
+INSERT INTO EMP VALUES (7654,'MARTIN','SALESMAN',7698,'81-09-10',1250,1400,30);
+INSERT INTO EMP VALUES (7499,'ALLEN','SALESMAN',7698,'81-02-11',1600,300,30);
+INSERT INTO EMP VALUES (7844,'TURNER','SALESMAN',7698,'81-08-21',1500,0,30);
+INSERT INTO EMP VALUES (7900,'JAMES','CLERK',7698,'81-12-11',950,NULL,30);
+INSERT INTO EMP VALUES (7521,'WARD','SALESMAN',7698,'81-02-23',1250,500,30);
+INSERT INTO EMP VALUES (7902,'FORD','ANALYST',7566,'81-12-11',3000,NULL,20);
+INSERT INTO EMP VALUES (7369,'SMITH','CLERK',7902,'80-12-11',800,NULL,20);
+INSERT INTO EMP VALUES (7788,'SCOTT','ANALYST',7566,'82-12-22',3000,NULL,20);
+INSERT INTO EMP VALUES (7876,'ADAMS','CLERK',7788,'83-01-15',1100,NULL,20);
+INSERT INTO EMP VALUES (7934,'MILLER','CLERK',7782,'82-01-11',1300,NULL,10);
+
+commit;
+--계층형질의문
+select *
+from emp;
+select rpad(' ', level*3)||ename as employee, level,sal,job,empno,mgr
+from emp
+start with ename= 'KING'
+connect by prior empno=mgr;
+  
+  
+select rpad(' ', level*3) || ename as employee, level, sal, job
+from emp
+start with ename ='KING'
+CONNECT BY prior empno =mgr and ename!='BLAKE';
+  
+  --서열순서유지하면서 월급이 높은사원부터 출력
+  select rpad(' ', level*3)||ename as employee, level,sal,job,empno,mgr
+from emp
+start with ename= 'KING'
+connect by prior empno=mgr
+order siblings by sal desc;
+
+
+  select rpad(' ', level*3)||ename as employee, level,sal,job,empno,mgr
+from emp
+start with ename= 'KING'
+connect by prior empno=mgr
+order by sal desc;
+
+--서열순서를 가로로추력
+select ename, SYS_CONNECT_BY_PATH(ename, '/') as path
+FROM emp
+START WITH ename ='KING'
+CONNECT BY prior empno=mgr;
+
+select ename, LTRIM(SYS_CONNECT_BY_PATH(ename, '/'),'/') as path
+FROM emp
+START WITH ename ='KING'
+CONNECT BY prior empno=mgr;
+
+--일반테이블생성
+CREATE TABLE EMP01
+(EMPNO NUMBER(10),
+ENAME VARCHAR2(10),
+SAL NUMBER(10,2),
+HIREDATE DATE);
+
+--임시테이블생성 :GLOBAL TEMPORARY
+--ON COMMIT DELETE ROWS : COMMIT할때까지만 데이터보관
+--ON COMMIT PRESERVE ROWS : 세션이 종료될때까지만 데이터보관
+CREATE GLOBAL TEMPORARY TABLE EMP37
+(EMPNO NUMBER(10),
+ENAME VARCHAR2(10),
+SAL NUMBER(10))
+ON COMMIT DELETE ROWS;
+
+insert into emp37 values(1111,'scott',3000);
+select * from emp37;
+commit;
+
+
+CREATE GLOBAL TEMPORARY TABLE EMP38
+(EMPNO NUMBER(10),
+ENAME VARCHAR2(10),
+SAL NUMBER(10))
+ON COMMIT preserve ROWS;
+
+insert into emp38 values(1111,'scott',3000);
+select * from emp38;
+commit;
+exit

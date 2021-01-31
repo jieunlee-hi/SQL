@@ -1,0 +1,155 @@
+--1. 연설문에서 가장많이 나오는 단어 분석
+--데이터출처 : https://news.stanford.edu/2005/06/14/jobs-061505/
+--REGEXP_SUBSTR : 정규표현식 함수 - 정교하게 문자열에서 원하는 단어나 철자를 추출가능
+SELECT *
+FROM SPEECH;
+SELECT REGEXP_SUBSTR('I NEVER GRADUATED FROM COLLEGE','[^ ]+',1,2) WORD
+FROM DUAL;
+
+--어절단위로 단어 나눔
+SELECT REGEXP_SUBSTR(LOWER(SPEECH_TEXT),'[^ ]+',1,A) WORD
+FROM SPEECH,(SELECT LEVEL A FROM DUAL CONNECT BY LEVEL <=52);
+
+
+--어절 단위로 나눈 단어들을 카운트하여 가장 많이 나오는 단어순으로 정렬
+SELECT WORD,COUNT(*)
+FROM (SELECT REGEXP_SUBSTR(LOWER(SPEECH_TEXT),'[^ ]+',1,A)WORD
+        FROM SPEECH, (SELECT LEVEL A FROM DUAL CONNECT BY LEVEL <=52)
+        )
+WHERE WORD IS NOT NULL
+GROUP BY WORD
+ORDER BY COUNT(*) DESC;
+
+
+
+-- 2. 연설문에서 긍정단어가 많은지 부정단어가 많은지 분석
+--긍정단어 부정단어 테이블 생성
+CREATE TABLE POSITIVE (P_NEXT VARCHAR2(2000));
+CREATE TABLE NEGATIVE (N_NEXT VARCHAR2(2000));
+
+SELECT *
+FROM POSITIVE;
+
+SELECT COUNT(*)
+FROM NEGATIVE;
+
+select count(*)
+from speech;
+
+
+CREATE VIEW SPEECH_VIEW
+AS
+SELECT REGEXP_SUBSTR(LOWER(SPEECH_TEXT),'[^ ]+',1,A) WORD
+FROM SPEECH,(SELECT LEVEL A
+             FROM DUAL
+             CONNECT BY LEVEL <= 52);
+
+--긍정단어 건수 조회             
+SELECT COUNT(word) AS "긍정단어"
+FROM SPEECH_VIEW
+WHERE LOWER(word) IN (SELECT LOWER(P_NEXT)
+                        FROM POSITIVE);
+                        
+                        
+--부정단어 건수 조회
+select count(word) as 부정단어
+from speech_view
+where lower(word) in (select lower(n_next)from negative);
+
+
+
+
+
+--3.절도가 많이발생하는 요일 분석
+
+--범죄발생테이블생성 
+CREATE TABLE CRIME_DAY
+(CRIME_TYPE VARCHAR2(50),
+SUN_CNT NUMBER(10),
+MON_CNT NUMBER(10),
+TUE_CNT NUMBER(10),
+WED_CNT NUMBER(10),
+THU_CNT NUMBER(10),
+FRI_CNT NUMBER(10),
+SAT_CNT NUMBER(10),
+UNKNOWN_CNT NUMBER(10));
+--공공데이터포털 "요일별범죄현황"다운 후 테이블에 입력
+
+ 
+SELECT *
+FROM CRIME_DAY;
+CREATE TABLE CRIME_DAY_UNPIVOT
+AS
+SELECT *
+FROM CRIME_DAY
+UNPIVOT(CNT FOR DAY_CNT IN(SUN_CNT,MON_CNT,TUE_CNT,WED_CNT,THU_CNT,FRI_CNT,SAT_CNT));
+
+SELECT *
+FROM CRIME_DAY_UNPIVOT;
+
+--절도의 가장많은순 순위1위 출력
+SELECT *
+FROM(
+SELECT DAY_CNT, CNT,RANK() OVER(ORDER BY CNT DESC) RNK
+FROM CRIME_DAY_UNPIVOT
+WHERE TRIM(CRIME_TYPE)='절도'
+)
+WHERE RNK=1;
+
+
+
+-- 4. 대학등록금이 가장높은 학교 분석
+--대학별등록금테이블생성
+CREATE TABLE UNIVERSITY_FEE
+(DIVISION       VARCHAR2(20),
+ TYPE           VARCHAR2(20),
+ UNIVERSITY     VARCHAR2(60),
+ LOC            VARCHAR2(40),
+ ADMISSION_CNT  NUMBER(20),
+ ADMISSION_FEE   NUMBER(20),
+ TUITION_FEE      NUMBER(20) ) ;
+ --공공데이터포털 "2019 대학별평균등록금20190905"  테이블에 입력
+ SELECT *
+ FROM UNIVERSITY_FEE;
+ 
+
+--등록금가장높은학교순위 1위 출력
+ SELECT *
+ FROM(
+ SELECT UNIVERSITY, TUITION_FEE,
+ RANK() OVER (ORDER BY TUITION_FEE DESC NULLS LAST) 순위
+ FROM UNIVERSITY_FEE)
+ WHERE 순위=1;
+ 
+ 
+ 
+
+-- 5. 서울시 물가 중 가장 비싼품목과 가격 분석
+--서울시 생필품농축산물 테이블 생성 
+create  table price 
+(  
+P_SEQ	number(10),
+M_SEQ	number(10),
+M_NAME  varchar2(80),
+A_SEQ	number(10),
+A_NAME	varchar2(60),
+A_UNIT	varchar2(40),
+A_PRICE	number(10),
+P_YEAR_MONTH	varchar2(30),
+ADD_COL	     varchar2(180),
+M_TYPE_CODE	varchar2(20),
+M_TYPE_NAME	varchar2(20),
+M_GU_CODE	varchar2(10),
+M_GU_NAME	varchar2(30) );
+
+----공공데이터포털 "서울시 생필품 농축산물 가격 정보 2012년"  테이블에 입력
+
+--price 최대가격 출력 
+SELECT A_NAME as "상품", A_PRICE as "가격", M_NAME as "매장명"
+  FROM PRICE
+  WHERE A_PRICE = (SELECT MAX(A_PRICE)
+		     FROM PRICE);
+
+
+
+

@@ -1,0 +1,61 @@
+--사원테이블을 생성하는데, 월급이 0에서 6000사이의 데이터만 입력되거나 수정
+CREATE TABLE EMP6
+(EMPNO NUMBER(10),
+ ENAME VARCHAR2(20),
+ SAL NUMBER(10) CONSTRAINT EMP6_SAL_CK
+ CHECK(SAL BETWEEN 0 AND 6000));
+ 
+ INSERT  INTO emp6 VALUES (7839, 'KING', 5000);
+INSERT  INTO emp6 VALUES (7698, 'BLAKE', 2850);
+INSERT  INTO emp6 VALUES (7782, 'CLARK', 2450);
+INSERT  INTO emp6 VALUES (7839, 'JONES', 2975);
+COMMIT;
+
+ SELECT *
+ FROM EMP6;
+ 
+ UPDATE EMP6
+ SET sal =9000
+ where ename ='CLARK';
+ --제약 삭제 명령아
+ ALTER TABLE emp6
+ DROP CONSTRAINT emp6_sal_ck;
+ 
+ 
+ --부서테이블에 존재하는 부서번호만 입력할 수 있도록 제약
+ DROP  TABLE DEPT7;
+DROP  TABLE EMP7;
+--부모테이블
+CREATE TABLE DEPT7
+( DEPTNO  NUMBER(10) CONSTRAINT DEPT7_DEPTNO_PK PRIMARY KEY,
+  DNAME  VARCHAR2(14),
+  LOC  VARCHAR2(10) );
+
+--자식테이블
+CREATE TABLE EMP7
+(EMPNO   NUMBER(10),
+ ENAME    VARCHAR2(20),
+ SAL       NUMBER(10),
+ DEPTNO  NUMBER(10)  CONSTRAINT EMP7_DEPTNO_FK REFERENCES DEPT7(DEPTNO) );
+ 
+ --FOREIGN KEY 제약 삭제 : CASCADE
+ ALTER TABLE DEPT7
+ DROP CONSTRAINT DEPT7_DEPTNO_PK CASCADE;
+ 
+ 
+ --WITH절 :임시테이블 생성
+ WITH JOB_SUMSAL AS (SELECT JOB, SUM(SAL) AS 토탈
+                                FROM EMP
+                                GROUP BY JOB),
+            DEPTNO_SUMSAL AS (SELECT DEPTNO,SUM(SAL) AS 토탈
+                                FROM EMP
+                                GROUP BY DEPTNO
+                                HAVING SUM(SAL)>(SELECT AVG(토탈) +3000 FROM JOB_SUMSAL)
+                                )
+SELECT DEPTNO,토탈
+                    FROM DEPTNO_SUMSAL;
+                    
+
+
+ 
+ 

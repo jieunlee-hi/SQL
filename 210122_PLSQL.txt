@@ -1,0 +1,155 @@
+--두 수를 각각 물어보게 하고 입력받아 두수의 합이 결과로 출력되게 하는 PL/SQL문 작성
+SET SERVEROUTPUT ON
+ACCEPT P_NUM1 PROMPT '첫번째 숫자를 입력하세요 ~'
+ACCEPT P_NUM2 PROMPT '두번째 숫자를 입력하세요~'
+
+DECLARE
+    V_SUM NUMBER(10);
+BEGIN
+    V_SUM := &P_NUM1 + &P_NUM2;
+    DBMS_OUTPUT.put_line('총합은: ' || V_SUM);
+END;
+
+
+
+set serveroutput on
+accept p_num1 prompt '숫자입력'
+accept p_num2 prompt '숫자입력2'
+
+declare
+    vsum number(10);
+begin
+ vsum : = &p_num1 + &p_num2;
+ dbms_output.put_line('합계:'||vsum);
+ end;
+ /
+ select  * from emp;
+ --사원번호를 입력받아 해당사원월급출력
+ set serveroutput on
+ accept p_no prompt '사원번호입력:'
+ 
+ declare
+  v_sal varchar(20);
+begin
+       select sal into v_sal
+        from emp 
+        where EMPNO=&p_no;
+        dbms_output.put_line('사원월급:'||v_sal);
+  
+end;
+/
+
+--숫자를 입력받아 짝수인지 홀수인지
+set serveroutput on
+set verify off  --변수에들어가는값을 보여주는과정을 출력하지않는다.
+accept   p_num   prompt  '숫자를 입력하세요 ~  '
+begin
+if   mod(&p_num,2) = 0  then
+        dbms_output.put_line('짝수입니다.');
+    else  
+        dbms_output.put_line('홀수입니다.');
+end if;
+end;
+/
+
+
+
+--이름을 입력받아 월급3000이상 고소득자 2000이상 중간소득 그이하 저소득
+
+set serveroutput on
+set verify off
+accept p_ename prompt '사원이름입력:'
+
+declare
+    v_ename emp.ename%type :=upper('&p_ename');
+    v_sal emp.sal%type;
+    
+begin
+    select sal into v_sal
+    from emp
+    where ename=v_ename;
+    
+    if v_sal >= 3000 then
+        dbms_output.put_line('high');
+    elsif v_sal >=2000 then
+        dbms_output.put_line('middle');
+    else
+        dbms_output.put_line('low');
+    end if;
+end;
+/
+
+
+
+set serveroutput on
+set verify off
+accept p_ename prompt '사원 이름을 입력하세요 ~ '
+declare  
+     v_ename  emp.ename%type := upper('&p_ename');
+     v_sal     emp.sal%type;  
+
+ begin  
+    select  sal  into  v_sal 
+      from  emp
+      where ename = v_ename;
+     
+    if   v_sal >= 3000  then 
+         dbms_output.put_line('고소득자 입니다.');
+    elsif   v_sal >= 2000  then 
+        dbms_output.put_line('중간 소득자 입니다.');
+    else  
+        dbms_output.put_line('저소득자 입니다.');
+     end  if;
+end;
+/
+
+
+
+--basic loop문
+set serveroutput on
+declare
+    v_count number(10) :=0;
+begin 
+    loop
+        v_count := v_count +1;
+        dbms_output.put_line('2X'||v_count||'='||2*v_count);
+        exit when v_count =9;
+    end loop;
+end;
+/
+
+
+set serveroutput on
+declare 
+    v_count number(10) :=0;
+begin
+    while v_count<9 loop 
+        v_count := v_count+1;
+        dbms_output.put_line('2x'||v_count||'='||2*v_count);
+    end loop;
+end;
+/
+
+--for
+set serveroutput on
+begin
+ for i in 1..9 loop
+ dbms_output.put_line('2x'||i||'='||2*i);
+ end loop;
+end;
+/
+        
+    
+--이중 loop문
+prompt 구구단 전체출력
+begin for i in 2..9 loop
+        for j in 1..9 loop
+            dbms_output.put_line(i||'x'||j||'='||i*j);
+        end loop;
+    end loop;
+end;
+/
+    
+
+
+
