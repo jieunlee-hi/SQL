@@ -1,0 +1,109 @@
+--seibro 값 출력
+
+set serveroutput on;
+
+create or replace PROCEDURE SEIBRO_result
+
+IS
+
+BEGIN
+
+DECLARE
+
+    ISSUE_INST_NAME SEIBRO.issue_inst_name%TYPE;
+
+    F16013 SEIBRO.F16013%TYPE;
+
+    F34581 SEIBRO.F34581%TYPE;
+
+    F16406 SEIBRO.F16406%TYPE;
+
+    F16241 SEIBRO.F16241%TYPE;
+
+    F16228 SEIBRO.F16228%TYPE;
+
+    F16409 SEIBRO.F16409%TYPE;
+
+    good_type SEIBRO.F16406%TYPE;
+
+    issue_cnt char(1000);
+
+    CURSOR code_cur --커서정의
+
+    IS
+
+    SELECT F16013
+
+			 , CASE WHEN F34581 LIKE '%ELS%' THEN 'ELS'
+
+            		WHEN F34581 LIKE '%ELB%' THEN 'ELB'
+
+            		WHEN F34581 LIKE '%DLS%' THEN 'DLS'
+
+            		WHEN F34581 LIKE '%DLB%' THEN 'DLB'
+
+            								 --ELSE DECODE(F16406,2,'ELS',3,'DLS')
+
+       		   END  good_type
+
+			 , TRIM(REPLACE(F34581,' ','')) f34581
+
+             ,issue_inst_name
+
+             ,TO_NUMBER(REGEXP_REPLACE(REPLACE(F34581,'100조',''), '[^0-9]', '')) issue_cnt --숫자만추출
+
+			 , F16241 
+
+          FROM SEIBRO  
+
+         WHERE F16406 IN ('ELS','DLS')  					-- ELS/DLS
+
+           AND F16409 != '사모'							-- 사모 제외
+
+           order by 4,5,6 desc
+
+    ;
+
+
+
+BEGIN
+
+    OPEN code_cur;
+
+    delete from seibro_tmp;
+
+
+
+    LOOP --반복
+
+        FETCH code_cur INTO F16013,good_type,f34581,issue_inst_name,issue_cnt,f16241; --커서에서 데이터 가져와서 하나씩 변수에 넣기
+
+       --select * from seibro;
+
+        --insert
+
+        --into EMP_DEPTNO_TOTAL(deptno,total)--테이블생성시
+
+        --values(v_deptno,v_total);F16013,good_type,issue_inst_name,issue_cnt
+
+            DBMS_OUTPUT.PUT_LINE(F16013||'  '||good_type||' '||issue_inst_name||' '||issue_cnt); --출력문
+
+            insert into seibro_tmp values(F16013,good_type,issue_inst_name,issue_cnt);
+
+            EXIT WHEN code_cur %NOTFOUND; --더이상 없을 경우 종료
+
+
+
+    END LOOP;
+
+    CLOSE code_cur; --커서 닫기
+
+END;
+
+end SEIBRO_result;
+
+/
+
+
+
+exec SEIBRO_result;
