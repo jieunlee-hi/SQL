@@ -1,0 +1,126 @@
+--VIEW : CREATE VIEW 뷰이름다음에 AS 이후 뷰가 보여줘야할 쿼리작성
+CREATE VIEW EMP_VIEW
+AS
+SELECT empno, ename, sal, job,deptno
+FROM emp
+WHERE job = 'SALESMAN';
+
+--VIEW 데이터수정해도 데이터가 변경된다.
+select * from emp_view;
+update emp_view set sal=0 where ename='MARTIN';
+select * from emp where job='SALESMAN';
+
+--뷰에 함수나 그룹함수가 포함되어있으면 복합뷰라고한다
+--함수나 그룹함수 쓸 때 반드시 별칭을 써야한다.
+CREATE VIEW EMP_VIEW2
+AS
+SELECT deptno, round(avg(sal)) sal
+from emp
+group by deptno;
+
+select * from emp_view2;
+
+--INDEX = 검색속도높이기
+CREATE INDEX EMP_SAL
+ON EMP(SAL);
+
+create sequence seq1 --시퀀스 생성
+START WITH 1  --첫시작 숫자 1
+INCREMENT BY 1  --숫자의 증가치 1
+MAXVALUE 100  --최대숫자 100
+NOCYCLE;  --다시처음1번부터 생성할지 여부
+
+SELECT MAX(empno)
+FROM emp;
+
+INSERT INTO EMP(empno, ename, sal, job, deptno)
+VALUES(7935,'JACK',3400,'ANALYST',20);
+
+create TABLE EMP02
+(EMPNO NUMBER(10),
+ENAME VARCHAR2(10),
+SAL NUMBER(10));
+
+INSERT INTO EMP02 VALUES(SEQ1.NEXTVAL,'JACK',3500);
+INSERT INTO EMP02 VALUES(SEQ1.NEXTVAL,'JAMES',4500);
+SELECT *
+FROM EMP02;
+
+--실수로 지운 데이터복구
+SELECT ename, sal
+FROM emp
+WHERE ename='KING';
+
+update emp
+set sal=10
+where ename='KING';
+commit;
+
+--5분전데이터확인
+select ename, sal
+from emp 
+as of timestamp(systimestamp - interval '5' minute)
+where ENAME='KING';
+
+--사원테이블을 플래시백 하려면 먼저 상태변경해야함
+--delete 하고 commit;했을때
+alter table emp enable row movement;
+flashback table emp to timestamp(systimestamp - interval '5' minute);
+
+--drop 된 사원테이블을 휴지ㅌ통에서복원
+DROP TABLE EMP; --테이블삭제
+SELECT ORIGINAL_NAME, DROPTIME
+FROM USER_RECYCLEBIN; --휴지통에 존재하는지확인
+FLASHBACK TABLE emp TO BEFORE DROP;
+
+
+--과거부터 현재까지 데이터변경이력
+SELECT ename, sal, versions_starttime, versions_endtime, versions_oreration
+FROM emp
+VERSIONS BETWEEN TIMESTAMP
+TO_TIMESTAMP('2019-06-30 08:20:00','RRRR-MM-DD HH24:MI:SS')
+AND MAXVAUE
+WHERE ename='KING'
+ORDER BY versions_starttime;
+
+--PRIMARY KEY : 중복된데이터와 NULL값 입력못함
+--제약이름은 테이블명_컬럼명_제약종류축약
+CREATE TABLE DEPT2
+(DEPTNO NUMBER(10) CONSTRAINT DEPT2_DEPNO_PK PRIMARY KEY,
+DNAME VARCHAR2(14),
+LOC VARCHAR2(10));
+
+--테이블생성후에 제약생성
+CREATE TABLE DEPT2_
+(DEPTNO NUMBER(10),
+DNAME VARCHAR2(14),
+LOC VARCHAR2(10));
+
+
+ALTER TABLE DEPT2_
+ADD CONSTRAINT DEPT2_DEPTNO_PK PRIMARY KEY(DEPTNO);
+
+
+
+
+--UNIQUE :NULL값입력가능 중복데이터불가CREATE TABLE DEPT2_
+CREATE TABLE DEPT3
+(DEPTNO NUMBER(10),
+DNAME VARCHAR2(14) CONSTRAINT DEPT3_DNAME_UN UNIQUE,
+LOC VARCHAR2(10));
+
+
+
+--NOT NULL : NULL값이존재하지않아야 중간에 제약변경가능
+CREATE TABLE DEPT5
+(DEPTNO NUMBER(10),
+DNAME VARCHAR2(14) ,
+LOC VARCHAR2(10) CONSTRAINT DEPT5_LOC_NN NOT NULL);
+
+CREATE TABLE DEPT5__
+(DEPTNO NUMBER(10),
+DNAME VARCHAR2(14) ,
+LOC VARCHAR2(10));
+
+ALTER TABLE DEPT5__
+MODIFY LOC CONSTRAINT DEPT5___LOC_NN NOT NULL;

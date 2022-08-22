@@ -1,0 +1,27 @@
+--USING 절 별첨불가, 괄호사용
+SELECT e.ename as 이름, e.job as 직업, e.sal as 월급, d.loc as 부서위치
+  FROM emp e join dept d
+  USING (deptno)
+  WHERE e.job='SALESMAN';
+
+
+select *
+from emp e join dept d
+USING (deptno) join salgrade s ON (e.sal between s.losal and s.hisal);
+
+--natural join :테이블별칭없이 사용해야함
+SELECT e.ename as 이름, e.job as 직업, e.sal as 월급, d.loc as 부서위치
+from emp e natural join dept d
+where e.job='SALESMAN';
+
+--RIGHT OUTER JOIN
+select e.ename , d.locs
+from emp e RIGHT OUTER JOIN dept d
+ON(e.deptno=d.deptno);
+
+
+select ename, sal
+FrOM emp
+where sal =(SELECT sal
+                FROM emp
+                WHERE ename ='SCOTT');

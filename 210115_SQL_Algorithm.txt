@@ -1,0 +1,65 @@
+--구구단2단출력
+
+WITH LOOP_TABLE AS (SELECT LEVEL AS NUM
+                    FROM DUAL CONNECT BY LEVEL<=9) --1~9까지출력하는 WITH테이블생성
+SELECT '2'||'X'||NUM||'='||2*NUM AS "2단"
+FROM LOOP_TABLE;
+
+                    
+WITH LOOP_TABLE AS (SELECT LEVEL AS NUM
+                    FROM DUAL CONNECT BY LEVEL<=9), --1~9까지출력하는 WITH테이블생성,
+                    GUGU_TABLE AS (SELECT LEVEL +1 AS GUGU
+                         FROM DUAL CONNECT BY LEVEL<=8) -- 1+8 =9
+SELECT TO_CHAR(A.NUM)||'X'||TO_CHAR(B.GUGU)||'='||TO_CHAR(B.GUGU * A.NUM)
+FROM LOOP_TABLE A , GUGU_TABLE B;
+
+
+WITH LOOP_TABLE AS (SELECT LEVEL AS NUM
+                    FROM DUAL CONNECT BY LEVEL<=9), --1~9까지출력하는 WITH테이블생성,
+                    GUGU_TABLE AS (SELECT LEVEL  AS GUGU
+                         FROM DUAL CONNECT BY LEVEL<=8) -- 1+8 =9
+SELECT A.NUM||'X'||B.GUGU||'='||B.GUGU * A.NUM AS 구구단
+FROM LOOP_TABLE A , GUGU_TABLE B;
+
+--직각삼각형 출력
+--LPAD(기준이 되는 문자 , 반복횟수 , 기준이 되는 문자를 기준으로 왼쪽에 채울 문자)
+
+WITH LOOP_TABLE AS (SELECT LEVEL AS NUM
+                    FROM DUAL
+                    CONNECT BY LEVEL <=8)
+SELECT LPAD(' ',10-NUM,' ')|| LPAD('☆',NUM,'☆')AS STAR
+FROM LOOP_TABLE;
+
+--입력받은 숫자만큼 삼각형출력
+UNDEFINE 숫자1 --치환변수의 값 초기화
+UNDEFINE 숫자2
+
+WITH LOOP_TABLE AS(SELECT LEVEL AS NUM
+                    FROM DUAL
+                    CONNECT BY LEVEL <= &숫자1)
+SELECT LPAD(' ',&숫자2-NUM,' ') || LPAD('★',NUM,'★') AS "TRIANGLE"
+FROM LOOP_TABLE;
+
+
+--마름모출력
+UNDEFINE P_NUM
+ACCEPT P_NUM PROMPT '숫자 입력 :'
+SELECT LPAD(' ' ,&P_NUM-LEVEL,' ') || RPAD('★',LEVEL,'★')AS STAR FROM DUAL
+CONNECT BY LEVEL <&P_NUM+1
+UNION ALL 
+SELECT LPAD(' ', LEVEL,' ')||RPAD('★',(&P_NUM)-LEVEL,'★')AS STAR FROM DUAL
+CONNECT BY LEVEL < &P_NUM;
+
+
+--사각형출력
+UNDEFINE P_N1
+UNDEFINE P_N2
+ACCEPT P_N1 PROMPT '가로 숫자를 입력하세요~';
+ACCEPT P_N2 PROMPT '세로 숫자를 입력하세요~';
+
+WITH LOOP_TABLE AS(SELECT LEVEL AS NUM
+                    FROM DUAL
+                    CONNECT BY LEVEL <=&P_N2)
+SELECT LPAD('★',&P_N1,'★')AS STAR
+FROM LOOP_TABLE;
+                    

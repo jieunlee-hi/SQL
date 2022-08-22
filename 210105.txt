@@ -1,0 +1,138 @@
+select empno, ename, sal, sum(sal) over (order by empno Rows
+                                        BETWEEN UNBOUNDED PRECEDING
+                                        AND CURRENT ROW)누적치
+from emp
+where job in ('ANALYST','MANAGER');
+
+select empno,ename, sal, RATIO_TO_REPORT(sal) OVER () as 비율,
+                        SAL/SUM(sal) OVER () as "비교비율"
+FROM emp
+where deptno=20;
+
+
+
+--rollup
+select deptno,job,mgr,sum(sal)
+from emp
+group by ROLLUP(deptno,job,mgr);
+
+--cube :전체토탈월급출력
+select job, sum(sal)
+from emp
+group by cube(job);
+
+select deptno, job,sum(sal)
+from emp
+group by cube(deptno,job);
+                                    
+                                    
+                                    
+                                    
+--grouping sets
+select deptno,job,sum(sal)
+from emp
+group by grouping sets((deptno),(job),());
+
+--rollup과 grouping sets비교
+select deptno, sum(sal)
+from emp
+group by rollup(deptno);
+
+select deptno, sum(sal)
+from emp
+group by grouping
+sets((deptno),());
+
+
+
+
+--ROW_NUMBER() over(order by~~) :고유번호
+--ex ) RANK -11345 DENSE_RANK-11234  ROW_NUMBER-12345
+select deptno, ename, sal,ROW_NUMBER() over(PARTITION BY deptno ORDER BY sal DESC) 번호
+from emp
+where deptno in(10,20);
+
+
+--상단 5개행출력
+select ROWNUM, empno, ename, job, sal
+from emp
+where ROWNUM <=5;
+
+--월급높은순 4행 : FETCH FIRST N ROWS ONLY;
+select empno, ename, job, sal
+from emp
+order by sal DESC FETCH FIRST 4 ROWS ONLY;
+--월급높은 20%
+
+select empno, ename, job, sal
+from emp
+order by sal desc FETCH FIRSt 20 PERCENT ROWS ONLY;
+
+--WITH TIES : 여러행이 동일한값을가진다면
+select empno, ename, job, sal
+from emp
+order by sal DESC FETCH FIRST 2 ROWS WITH TIES; 
+
+--OFFSET :출력이시작되는 행의 위치 지정
+select empno, ename, job, sal
+from emp
+order by sal DESC offset 9 ROWS; --10번째행부터 끝까지 출력됨
+
+select empno, ename, job, sal
+from emp
+order by sal DESC offset 9 ROWS
+FETCH FIRST 2 ROWS ONLY;
+
+select *
+from dept;
+--여러테이블조인 : EQUAL JOIN
+select ename, loc
+from emp,dept;
+
+select ename, loc,job,emp.deptno
+from emp, dept
+where emp.deptno = dept.deptno and emp.job='ANALYST';
+
+
+
+--NON EQUL JOIN
+select e.ename , e.sal, s.grade
+from emp e, salgrade s
+where e.sal between s.losal and s.hisal;
+
+select *
+from salgrade;
+
+
+--OUTER JOIN :기존 EQUAL JOIN 문법에 (+)추가/ LIGHT OUTER JOIN - LEFT OUTER JOIN
+select e.ename, d.loc
+FROM emp e, dept d
+WHERE e.deptno (+) = d.deptno;
+
+
+--self join
+select e.ename as 사원 , e.job as 직업, m.ename as 관리자, m.job as 직업
+from emp e, emp m
+where e.mgr = m.empno and e.job='SALESMAN';
+
+select *
+from emp;
+
+
+--ON절
+select e.ename as 사원 , e.job as 직업, e.sal as 월급, d.loc as 부서위치
+FROM emp e JOIN dept d
+ON(e.deptno =d.deptno)
+where e.job='SALESMAN';
+
+
+select e.ename, d.loc
+from emp e, dept d, salgrade s
+where e.deptno = d.deptno
+and e.sal between s.losal and s.hisal;
+
+select e.ename, d.loc
+from emp e join dept d
+on(e.deptno =d.deptno)
+JOIN salgrade s on(e.sal between s.losal and s.hisal);
+

@@ -1,0 +1,102 @@
+select ename, job, sal, RANK() over (ORDER BY sal DESC)as 순위
+FROM emp
+WHERE job in ('ANALYST','MANAGER');
+
+select ename, job, sal, RANK() over (PARTItION BY job 
+                                        order by sal DESC)as 순위
+FROM emp;
+
+--RANK는 1-1-3-4-5
+--DENSE_RANK는 1-1-2-3-4
+select ename, job, sal, RANK() over (ORDER BY sal DESC) AS RANK,
+                        DENSE_RANK() over(ORDER BY sal DESC) AS DENSE_RANK
+FROM emp
+WHERE job in ('ANALYST','MANAGER');
+
+
+select ename, job, sal, DENSE_RANK() over (PARTItION BY job 
+                                        order by sal DESC)as 순위
+FROM emp
+where hiredate BETWEEN to_date('1981/01/01','RRRR/MM/DD')
+                And to_date('1981/12/31','RRRR/MM/DD');
+         
+--월급이 2975인 사원은 월급순위가 어떻게되는지 출력       
+select dense_rank(2975) within group(ORDER BY sal DESC) 순위
+from emp;
+
+--NTILE(N) : 정렬한 결과를 N개등분으로 등급부여
+--NULLS LAST는 월급을 높은것부터 출력되도록정렬함 -> NULL을 맨아래에출력
+select ename,job, sal,
+            NTILE(4) over(order by sal desc nulls last) 등급
+FROM emp
+WHERE job in('ANALYST','MANAGER','CLERK');
+
+
+
+
+
+--RANK는 1-1-3-4-5
+--DENSE_RANK는 1-1-2-3-4
+--CUME_DIST 월급의 순위비율
+select ename, job, sal, RANK() over (ORDER BY sal DESC) AS RANK,
+                        DENSE_RANK() over(ORDER BY sal DESC) AS DENSE_RANK,
+                        CUME_DIST() over(ORDER BY sal desc) as CUM_DIST
+FROM emp;
+
+select ename, job, sal, RANK() over (PARTItION BY job 
+                                        order by sal DESC)as 순위,
+                     CUME_DIST() over (PARTItION BY job 
+                                        order by sal DESC)as CUM_DIST
+FROM emp;
+
+--LISTAGG를쓰려면 그룹바이절 필수
+select deptno, LISTAGG(ename,',') within group (order by ename)as EMPLOYEE
+from emp
+group by deptno;
+
+select job, LISTAGG(ename||'('||sal||')',',') within group (order by ename asc)as EMPLOYEE
+from emp
+group by job;
+
+--LAG (전행)
+--LEAD (다음행)
+select empno, ename, sal, LAG(sal,1) over (order by sal asc) "전 행",
+LEAD(sal,1) over (order by sal asc)"다음행"
+from emp
+where job in ('ANALYST','MANAGER');
+
+
+--DECODE(A,10,B)=A가 10이면 B를 출력 ,아니면 NULL 
+select SUM(DECODE(deptno,10,sal)) as "10",
+       SUM(DECODE(deptno,20,sal)) as "20",
+       SUM(DECODE(deptno,30,sal)) as "30"
+       
+       FROM emp;
+
+--PIVOT 문을 사용할때에는 FROEM 절에 괄호를 사용하여 특정컬럼만 선택해야한다.
+select *
+from (select deptno, sal from emp)
+PIVOT (sum(sal) for deptno in(10,20,30));
+
+--PIVOT과는 반대로 열을 행으로 출력
+
+select*
+from order2;
+
+select*
+from order2
+UNPIVOT(건수 for 아이템 in (BICYCLE, CAMERA,NOTEBOOK));
+
+--테이블 데이터에 NULL이있다면 출력안됨 
+update order2 set notebook=NULL where ename='SMITH';
+
+--이럴때 NULL값 행도 결과에 포함시키려면 INCLUDE NULLS
+select *
+from order2
+UNPIVOT INCLUDE NULLS(건수 for 아이템 in(BICYCLE,CAMERA,NOTEBOOK));
+
+
+
+
+
+
